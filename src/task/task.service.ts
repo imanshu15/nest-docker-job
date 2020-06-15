@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Interval } from '@nestjs/schedule';
 import * as fs from 'fs';
 import * as csv  from 'csv-parser';
 import * as ObjectsToCsv from 'objects-to-csv';
@@ -9,22 +9,25 @@ import * as ObjectsToCsv from 'objects-to-csv';
 export class TaskService {
 
     private readonly logger = new Logger(TaskService.name);
-    private readonly testFolder = 'C:/test/';
+    private readonly testFolder = '//FTD-NB-IMANSHU/networkPath';
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    @Cron('* * * * * *')
+    //@Cron('* * * * * *')
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    @Interval(10000)
     run() {
         try{
 
             this.createFolders();
 
             fs.readdir(this.testFolder, (err, files) => {
+                if(files && files.length > 0) {
+                    const csvFiles = files.filter(a => a.trim().toLowerCase().endsWith('csv'));
 
-                const csvFiles = files.filter(a => a.trim().toLowerCase().endsWith('csv'));
-
-                this.logger.debug(csvFiles);
-                // Need to implement a logic to separate file couples when there is more than two files.
-                this.generateNewCsv(csvFiles[0], csvFiles[1]);
+                    this.logger.debug(csvFiles);
+                    // Need to implement a logic to separate file couples when there is more than two files.
+                    this.generateNewCsv(csvFiles[0], csvFiles[1]);
+                }
             });
         }catch(err) {
             this.logger.error(err);

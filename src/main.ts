@@ -14,7 +14,6 @@ async function bootstrap() {
   // const tasksService = app.get(TaskService);
   const app = await NestFactory.create(AppModule);
   const taskService = app.select(TaskModule).get(TaskService, { strict: true });
-  taskService.run();
 }
 
 bootstrap();
